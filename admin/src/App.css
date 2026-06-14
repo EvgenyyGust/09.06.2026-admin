@@ -1,11 +1,10 @@
-body{
-  min-height: 100vh;
+
+h1 {
   text-align: center;
-  background-color: cyan;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 20px 0;
 }
-
-
-
 
 
 /* .counter { //scrap

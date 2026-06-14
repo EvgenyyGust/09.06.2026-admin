@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './Create.css'
 
-export default function Create() {
+export default function Create({pizzas, setPizzas}) {
+  const navigate = useNavigate()
+
   const [pizza, setPizza] = useState({
     name: "",
     description: "",
@@ -10,51 +13,33 @@ export default function Create() {
     isAvailable: true
   })
 
-  const handleChange = (event) => {
-    const { name, value, type, checked } = event.target
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
 
-    setPizza({
-      ...pizza,
+    setPizza(prev => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value
-    })
+    }))
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault()
 
-    if (!pizza.name.trim()) {
-      alert("Pizza name is required")
-      return
+      const newPizza = {
+      ...pizza,
+      id: Date.now(),
+      price: Number(pizza.price)
     }
 
-    if (!pizza.description.trim()) {
-      alert("Description is required")
-      return
-    }
+    setPizzas([...pizzas, newPizza])
 
-    if (pizza.price <= 0) {
-      alert("Price must be greater than 0")
-      return
-    }
-
-    console.log("Pizza created:", pizza)
-
-    alert("Pizza successfully created!")
-
-    setPizza({
-      name: "",
-      description: "",
-      price: "",
-      picture: "",
-      isAvailable: true
-    })
+    navigate("/pizzalist")
   }
 
   return (
-    <div>
-      <h2>Create Pizza</h2>
-
+    <div style={{ marginTop: "25px" }}>
       <form onSubmit={handleSubmit}>
+        <h2>Create Pizza</h2>
         <div>
           <label htmlFor="name">Pizza Name:</label>
           <input
@@ -63,6 +48,7 @@ export default function Create() {
             name="name"
             value={pizza.name}
             onChange={handleChange}
+            placeholder="Enter pizza name"
           />
         </div>
 
@@ -74,6 +60,7 @@ export default function Create() {
             name="description"
             value={pizza.description}
             onChange={handleChange}
+            placeholder="Enter ingredients or description"
             maxLength="200"
           />
         </div>
@@ -83,13 +70,14 @@ export default function Create() {
         </p>
 
         <div>
-          <label htmlFor="price">Price:</label>
+          <label htmlFor="price">Price ($):</label>
           <input
             type="number"
             id="price"
             name="price"
             value={pizza.price}
             onChange={handleChange}
+            placeholder="0.00"
           />
         </div>
 
@@ -101,6 +89,7 @@ export default function Create() {
             name="picture"
             value={pizza.picture}
             onChange={handleChange}
+            placeholder="Enter picture URL"
           />
         </div>
 

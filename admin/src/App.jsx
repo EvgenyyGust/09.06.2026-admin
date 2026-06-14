@@ -1,59 +1,76 @@
-import './App.css'
-import { Routes, Route, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
+import PizzaList from './PizzaList'
 import Create from './Create'
 import Update from './Update'
+import './App.css';
 
 function App() {
+  const navigate = useNavigate()
+
+  const defaultPizzas = [
+    {
+      id: 1,
+      name: "Pepperoni",
+      description: "Tomato sauce, pepperoni, mozzarella, spices",
+      price: "12",
+      picture: "https://images.unsplash.com/photo-1513104890138-7c749659a591",
+      isAvailable: true
+    },
+    {
+      id: 2,
+      name: "Margherita",
+      description: "Tomato sauce, mozzarella, basil",
+      price: "11",
+      picture: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
+      isAvailable: false
+    }
+  ]
+
+  const [pizzas, setPizzas] = useState(() => {
+    const saved = localStorage.getItem("pizzas")
+    return saved ? JSON.parse(saved) : defaultPizzas
+  })
+
+  useEffect(() => {
+    localStorage.setItem("pizzas", JSON.stringify(pizzas))
+  }, [pizzas])
 
   return (
     <>
       <h1>Admin</h1>
-      {/* make this send you to a form */}
-      <Link to="/create">
-        Create
-      </Link>
-      <br />
-      <Link to="/update">
-        Update
-      </Link>
-      {/* Make read and delete options */}
-      {/* Maybe add table for read and delete buttons? */}
+
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button onClick={() => navigate("/pizzalist")}>
+          Pizza list
+        </button>
+
+        <button onClick={() => navigate("/create")}>
+          Create
+        </button>
+
+        <button onClick={() => navigate("/update/1")}>
+          Update
+        </button>
+      </div>
+
       <Routes>
-        <Route path="/create" element={<Create />} />
-        <Route path="/update" element={<Update />} />
+        <Route
+          path="/pizzalist"
+          element={<PizzaList pizzas={pizzas} setPizzas={setPizzas} />}
+        />
+
+        <Route
+          path="/create"
+          element={<Create pizzas={pizzas} setPizzas={setPizzas} />}
+        />
+
+        <Route
+          path="/update/:id"
+          element={<Update pizzas={pizzas} setPizzas={setPizzas} />}
+        />
       </Routes>
     </>
-    // <> //maybe use this as a example
-    //   <section id="center">
-    //     <div className="hero">
-    //       <img src={heroImg} className="base" width="170" height="179" alt="" />
-    //       <img src={reactLogo} className="framework" alt="React logo" />
-    //       <img src={viteLogo} className="vite" alt="Vite logo" />
-    //     </div>
-    //     <div>
-    //       <h1>Get started</h1>
-    //       <p>
-    //         Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-    //       </p>
-    //     </div>
-    //     <button
-    //       type="button"
-    //       className="counter"
-    //       onClick={() => setCount((count) => count + 1)}
-    //     >
-    //       Count is {count}
-    //     </button>
-    //   </section>
-
-    //   <div className="ticks"></div>
-
-    //   <section id="next-steps">
-    //     ...
-    //   </section>
-
-    //   <div className="ticks"></div>
-    //   <section id="spacer"></section>
-    // </>
   )
 }
 
